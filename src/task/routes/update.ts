@@ -1,6 +1,5 @@
 // EXTERNAL
 import express from "express";
-const { Op } = require("sequelize");
 
 // INTERNAL
 import { TaskInstance } from "../../model/task";

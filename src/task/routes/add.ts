@@ -1,6 +1,5 @@
 // EXTRENAL
 import express from "express";
-const { Op } = require("sequelize");
 import { uuid } from 'uuidv4';
 
 // INTERNAL

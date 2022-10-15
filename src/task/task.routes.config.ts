@@ -2,9 +2,9 @@ import { CommonRoutesConfig } from "../common/common.routes.config";
 import express from "express";
 
 // ROUTE HANDLERS
-const { list } = require("./routes/list");
-const { add } = require("./routes/add");
-const { update } = require("./routes/update");
+import { list } from "./routes/list";
+import { add } from "./routes/add";
+import { update } from "./routes/update";
 
 export class TaskRoutes extends CommonRoutesConfig {
   constructor(app: express.Application) {
