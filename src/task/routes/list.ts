@@ -16,7 +16,7 @@ export const list = async (req: express.Request, res: express.Response) => {
     // LIST TASKS
     let tasks = await TaskInstance.findAll({
       where: { name: { [Op.like]: `%${search}%` } },
-      offset: pageSize * page,
+      offset: 0 + (page - 1) * pageSize,
       limit: pageSize
     });
 
