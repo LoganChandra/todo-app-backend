@@ -1,6 +1,5 @@
 // EXTERNAL
 import express from "express";
-import { OrderItem } from "sequelize/types";
 const { Op } = require("sequelize");
 
 // INTERNAL
