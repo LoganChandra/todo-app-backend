@@ -9,6 +9,7 @@ import { TaskInstance } from "../../model/task";
 export const list = async (req: express.Request, res: express.Response) => {
   try {
 
+    // ASSIGNING INPUTS
     let { search } = req.query
 
     // LIST TASKS
@@ -22,7 +23,6 @@ export const list = async (req: express.Request, res: express.Response) => {
       msg: "Task listed successfully",
     });
   } catch (error) {
-    console.log(error);
     res.status(500).send({ data: [], msg: "Failed to list tasks" });
   }
 };

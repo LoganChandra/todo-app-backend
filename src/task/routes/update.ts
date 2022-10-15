@@ -9,11 +9,10 @@ import { getStatus } from "../helpers"
 export const update = async (req: express.Request, res: express.Response) => {
   try {
 
+    // ASSIGNING INPUTS
     let { id } = req.params
     let { name, description, dueDate } = req.body
     dueDate = new Date(dueDate)
-
-    console.log("{ name, description, dueDate }", { name, description, dueDate });
 
     // INPUT ERROR HANDLING
     if (isNaN(dueDate.getTime())) {
@@ -37,7 +36,6 @@ export const update = async (req: express.Request, res: express.Response) => {
       msg: "Task updated successfully",
     });
   } catch (error) {
-    console.log(error);
     res.status(500).send({ data: [], msg: "Failed to update task" });
   }
 };

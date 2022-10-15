@@ -10,10 +10,9 @@ import { getStatus } from "../helpers"
 export const add = async (req: express.Request, res: express.Response) => {
   try {
 
+    // ASSIGNING INPUTS
     let { name, description, dueDate } = req.body
     dueDate = new Date(dueDate)
-
-    console.log("name, description, dueDate", name, description, dueDate);
 
     // INPUT ERROR HANDLING
     if (isNaN(dueDate.getTime())) {
@@ -41,7 +40,6 @@ export const add = async (req: express.Request, res: express.Response) => {
       error: null
     });
   } catch (error) {
-    console.log(error);
     res.status(500).send({ data: null, msg: "Failed to add task", error });
   }
 };

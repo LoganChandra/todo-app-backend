@@ -4,7 +4,6 @@ export const getStatus = (inp: Date): string => {
         let one_day = 1000 * 60 * 60 * 24;
         let serverDateTime = new Date();
         let diff = Math.ceil((date.getTime() - serverDateTime.getTime()) / one_day);
-        console.log("diff", diff);
 
         // CHECKING FOR STATUS
         if (diff < 0)
@@ -14,7 +13,6 @@ export const getStatus = (inp: Date): string => {
         return "Not urgent"
 
     } catch (e) {
-        console.log("ERROR", e);
         throw new Error(JSON.stringify(e));
     }
 }
