@@ -20,9 +20,14 @@ export const list = async (req: express.Request, res: express.Response) => {
       limit: pageSize
     });
 
+    // COUNT OF ALL TASKS
+    let totalCount = await TaskInstance.count({
+      where: { name: { [Op.like]: `%${search}%` } }
+    });
+
     // RETURN RESULT
     res.status(200).send({
-      data: tasks,
+      data: { totalCount, tasks },
       msg: "Task listed successfully",
     });
   } catch (error) {
