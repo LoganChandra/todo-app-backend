@@ -14,16 +14,15 @@ export const list = async (req: express.Request, res: express.Response) => {
     let pageSize: number = parseInt(<string>req.query.pageSize)
 
     // LIST TASKS
+    let where = { name: { [Op.like]: `%${search}%` } }
     let tasks = await TaskInstance.findAll({
-      where: { name: { [Op.like]: `%${search}%` } },
+      where,
       offset: 0 + (page - 1) * pageSize,
       limit: pageSize
     });
 
     // COUNT OF ALL TASKS
-    let totalCount = await TaskInstance.count({
-      where: { name: { [Op.like]: `%${search}%` } }
-    });
+    let totalCount = await TaskInstance.count({ where });
 
     // RETURN RESULT
     res.status(200).send({
