@@ -13,21 +13,21 @@ export class TaskRoutes extends CommonRoutesConfig {
 
   configureRoutes() {
 
-    // ROUTE CONFIG FOR task/list
+    // ROUTE CONFIG FOR LIST TASK
     this.app
       .route(`/task`)
       .get(async (req: express.Request, res: express.Response) => {
         await list(req, res);
       });
 
-    // ROUTE CONFIG FOR task/add
+    // ROUTE CONFIG FOR ADD TASK
     this.app
       .route(`/task`)
       .post(async (req: express.Request, res: express.Response) => {
         await add(req, res);
       });
 
-    // ROUTE CONFIG FOR task/update
+    // ROUTE CONFIG FOR UPDATE TASK
     this.app
       .route(`/task/:id`)
       .patch(async (req: express.Request, res: express.Response) => {
