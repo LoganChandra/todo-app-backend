@@ -4,6 +4,7 @@
     "module": "commonjs",
     "outDir": "./dist",
     "strict": true,
+    "types": ["jest", "node"],
     "esModuleInterop": true,
     "inlineSourceMap": true,
     "noImplicitAny": false,
