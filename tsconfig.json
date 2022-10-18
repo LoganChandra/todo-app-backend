@@ -7,6 +7,7 @@
     "types": ["jest", "mocha", "node"],
     "esModuleInterop": true,
     "inlineSourceMap": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "typeRoots": ["./node_modules/@types"]
   }
 }
