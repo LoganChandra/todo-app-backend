@@ -20,7 +20,7 @@ export const list = async (req: express.Request, res: express.Response) => {
       offset: 0 + (page - 1) * pageSize,
       limit: pageSize,
       order: [
-        ['createdDate', 'DESC']
+        ['createDate', 'DESC']
       ]
     });
 
@@ -33,6 +33,8 @@ export const list = async (req: express.Request, res: express.Response) => {
       msg: "Task listed successfully",
     });
   } catch (error) {
+    console.log("error", error);
+    
     res.status(500).send({ data: [], msg: "Failed to list tasks" });
   }
 };
