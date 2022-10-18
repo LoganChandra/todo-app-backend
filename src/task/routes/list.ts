@@ -18,7 +18,10 @@ export const list = async (req: express.Request, res: express.Response) => {
     let tasks = await TaskInstance.findAll({
       where,
       offset: 0 + (page - 1) * pageSize,
-      limit: pageSize
+      limit: pageSize,
+      order: [
+        ['createdDate', 'DESC']
+      ]
     });
 
     // COUNT OF ALL TASKS
