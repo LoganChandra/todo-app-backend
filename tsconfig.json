@@ -4,7 +4,7 @@
     "module": "commonjs",
     "outDir": "./dist",
     "strict": true,
-    "types": ["mocha", "node"],
+    "types": ["jest", "mocha", "node"],
     "esModuleInterop": true,
     "inlineSourceMap": true,
     "noImplicitAny": false
