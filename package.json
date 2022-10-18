@@ -15,8 +15,9 @@
   "license": "ISC",
   "dependencies": {
     "@types/chai": "^4.3.3",
-    "@types/node": "^18.0.0",
+    "@types/node": "^18.11.0",
     "@types/supertest": "^2.0.12",
+    "@types/mocha": "^10.0.0",
     "axios": "^0.27.2",
     "cors": "^2.8.5",
     "debug": "^4.3.4",
