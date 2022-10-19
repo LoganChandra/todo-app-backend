@@ -187,7 +187,7 @@ describe("Task routes", async () => {
 
         // TEST LIST CORRECT TASK
         request(app).get(`/task?${serialize({
-            search: testTaskId,
+            search: name,
             page: 1,
             pageSize: 10,
         })}`)
@@ -195,21 +195,11 @@ describe("Task routes", async () => {
 
                 // CHECK IF PAYLOAD KEYS ARE CORRECT
                 let data = res.body.data.tasks[0]
-                console.log("res.body.data.tasks", testTaskId, res.body.data.tasks);
-
                 expect(data.name).to.be.equal(name);
 
             })
             .end(done);
 
-        (async () => {
-
-            // DESTROY TEST DATA
-            await TaskInstance.destroy({
-                where: { name: { [Op.like]: `%${testTaskId}%` } }
-            });
-
-        })()
     })
 
 })
