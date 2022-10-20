@@ -16,7 +16,7 @@ export const createTestTasks = (async (testTaskId: string, n: number, postfix: s
     let createTaskPromiseArray = [...Array(n).keys()].map(e => {
         return TaskInstance.create({
             taskId: taskId != undefined ? taskId : uuid(),
-            name: `${testTaskId}${e}${postfix}`,
+            name: `${taskId != undefined ? taskId : testTaskId}${e}${postfix}`,
             description: "",
             dueDate: new Date().getTime(),
             createDate: new Date().getTime(),
