@@ -1,5 +1,6 @@
 // EXTERNAL
 import express from "express";
+import { Op } from "sequelize";
 
 // INTERNAL
 import { TaskInstance } from "../../model/task";
@@ -22,6 +23,16 @@ export const update = async (req: express.Request, res: express.Response) => {
     // GETTING STATUS
     let status = getStatus(dueDate)
 
+    let taskCount = await TaskInstance.count({
+      where: { taskId: { [Op.eq]: id } }
+    })
+
+    // CHECK IF TASK EXISTS
+    if (taskCount < 1) {
+      res.status(400).send({ data: null, msg: "Task does not exist" });
+      return
+    }
+
     // UPDATE TASK
     await TaskInstance.update({ name, description, dueDate: dueDate.getTime(), status }, {
       where: {
@@ -35,6 +46,6 @@ export const update = async (req: express.Request, res: express.Response) => {
       msg: "Task updated successfully",
     });
   } catch (error) {
-    res.status(500).send({ data: [], msg: "Failed to update task" });
+    res.status(500).send({ data: null, msg: "Failed to update task" });
   }
 };

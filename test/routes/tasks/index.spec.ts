@@ -1,34 +1,31 @@
 import request from "supertest";
-import { assert, expect } from "chai"
+import { expect } from "chai"
 import chai from "chai"
 import { app } from "../../../app";
-import { serialize } from "../../helpers";
+import { createTestTasks, serialize } from "../../helpers";
 import { Op } from "sequelize";
 import { TaskInstance } from "../../../src/model/task";
 import { uuid } from "uuidv4";
 
 
-// DEFINE testTaskID FOR CLEAN UP
+// DEFINING testTaskID FOR CLEAN UP
 const testTaskId = uuid();
 
-(async () => {
-
-    // CREATE TASK
-    await TaskInstance.create({
-        taskId: testTaskId,
-        name: "",
-        description: "",
-        dueDate: new Date().getTime(),
-        createDate: new Date().getTime(),
-        status: "Due soon"
+// DELETE TEST TASKS AFTER EACH TEST
+after(async () => {
+    await TaskInstance.destroy({
+        where: {
+            name: {
+                [Op.like]: `%${testTaskId}%`
+            }
+        }
     });
+});
 
-})()
+// ROUTES RETURN 200
+describe("ROUTES RETURN 200", async () => {
 
-describe("Task routes", async () => {
-
-    // TEST FOR RETURN 200
-    // ------------ TEST LIST TASK ------------
+    // ------------ LIST ------------
     it("List task responds with 200", (done) => {
 
         request(app).get(`/task?${serialize({
@@ -39,7 +36,7 @@ describe("Task routes", async () => {
 
     })
 
-    // ------------ TEST ADD TASK ------------
+    // ------------ ADD ------------
     it("Add task responds with 200", (done) => {
 
         let payload = {
@@ -51,7 +48,15 @@ describe("Task routes", async () => {
 
     })
 
-    // ------------ TEST UPDATE TASK ------------
+});
+
+// UPDATE ROUTE RETURN 200
+describe("UPDATE ROUTE RETURN 200", async () => {
+
+    before(() => {
+        createTestTasks(testTaskId, 1, "", testTaskId)
+    })
+    // ------------ UPDATE ------------
     it("Update task responds with 200", (done) => {
 
         let payload = {
@@ -62,9 +67,12 @@ describe("Task routes", async () => {
         request(app).patch(`/task/${testTaskId}`).send(payload).expect(200, done)
 
     })
+});
 
-    // TEST FOR RETURN 400 ON INVALID DATE
-    // ------------ TEST UPDATE ------------
+// ROUTES RETURN 400
+describe("ROUTES RETURN 400", async () => {
+
+    // ------------ UPDATE ------------
     it("Update task responds with 400 with invalid date", (done) => {
 
         let payload = {
@@ -76,7 +84,19 @@ describe("Task routes", async () => {
 
     })
 
-    // ------------ TEST ADD ------------
+    // ------------ UPDATE ------------
+    it("Update task responds with 400 with invalid date", (done) => {
+
+        let payload = {
+            name: "Test update task name",
+            description: "Test update task description",
+            dueDate: "invalid date string"
+        }
+        request(app).patch(`/task/invalid_id`).send(payload).expect(400, done)
+
+    })
+
+    // ------------ ADD ------------
     it("Add task responds with 400 with invalid date", (done) => {
 
         let payload = {
@@ -87,9 +107,21 @@ describe("Task routes", async () => {
         request(app).post("/task").send(payload).expect(400, done)
 
     })
+});
 
-    // TEST FOR RETURN 400 ON INVALID PAYLOAD
-    // ------------ TEST UPDATE ------------
+// ROUTES RETURN 400 ON INVALID PAYLOAD
+describe("ROUTES RETURN 400 ON INVALID PAYLOAD", async () => {
+
+    // ------------ LIST ------------
+    it("List task responds with 400 with invalid payload", (done) => {
+
+        request(app).get(`/task?${serialize({
+            invalid: "payload"
+        })}`).expect(400, done)
+
+    })
+
+    // ------------ UPDATE ------------
     it("Update task responds with 400 with invalid payload", (done) => {
 
         let payload = {
@@ -99,7 +131,7 @@ describe("Task routes", async () => {
 
     })
 
-    // ------------ TEST ADD ------------
+    // ------------ ADD ------------
     it("Add task responds with 400 with invalid payload", (done) => {
 
         let payload = {
@@ -109,39 +141,41 @@ describe("Task routes", async () => {
 
     })
 
-    // TEST FOR RETURN 404
-    // ------------ TEST UPDATE ------------
-    it("Update task responds with 404 is invalid route", (done) => {
+});
 
-        let payload = {
-            name: "Test update task name",
-            description: "Test update task description",
-            dueDate: "01-01-1970"
-        }
-        request(app).patch(`/invalid_path/${testTaskId}`).send(payload).expect(404, done)
+// API RETURNS 404 AT INVALID ROUTE
+describe("API RETURNS 404 AT INVALID ROUTE", async () => {
+
+    it("API responds with 404 is invalid route", (done) => {
+
+        request(app).get(`/invalid_path`).expect(404, done)
 
     })
 
-    // ------------ TEST ADD ------------
-    it("Add task responds with 404 is invalid route", (done) => {
+})
 
-        let payload = {
-            name: "Test add task name",
-            description: "Test add task description",
-            dueDate: "01-01-1970"
-        }
-        request(app).post("/invalid_path").send(payload).expect(404, done)
+// API RETURNS CORRECT PAYLOAD
+describe("API RETURNS CORRECT PAYLOAD", async () => {
+    // CREATING DUMMY TASKS
+    let addPostfix = " :: Test add task name"
+    let updatePostfix = " :: Test update task name"
 
+    before(() => {
+        createTestTasks(testTaskId, 11, "")
+        createTestTasks(testTaskId, 1, addPostfix)
+        createTestTasks(testTaskId, 1, updatePostfix)
     })
 
-    // ------------ TEST FOR LIST PAYLOAD ------------
+    // ------------ LIST ------------
     it("List task responds with correct payload", (done) => {
+
         let pageSize = 10
         request(app).get(`/task?${serialize({
             search: "",
             page: 1,
             pageSize,
         })}`).expect(200)
+
             .expect((res) => {
 
                 // CHECK IF PAYLOAD KEYS ARE CORRECT
@@ -159,12 +193,29 @@ describe("Task routes", async () => {
             .end(done);
     })
 
-    // ------------ TEST FOR ADD PAYLOAD ------------
+    // ------------ ADD ------------
     it("Add task adds database correctly", (done) => {
 
-        let name = `${testTaskId} :: Test add task name`
+        let name = `${testTaskId}0${addPostfix}`
+        request(app).get(`/task?${serialize({
+            search: name,
+            page: 1,
+            pageSize: 10,
+        })}`)
+            .expect((res) => {
 
-        // TEST LIST CORRECT TASK
+                let data = res.body.data.tasks[0]
+                expect(data.name).to.be.equal(name);
+
+            })
+            .end(done);
+
+    })
+
+    // ------------ UPDATE ------------
+    it("Update task updates database correctly", (done) => {
+
+        const name = `${testTaskId}0${updatePostfix}`
         request(app).get(`/task?${serialize({
             search: name,
             page: 1,
@@ -180,26 +231,4 @@ describe("Task routes", async () => {
             .end(done);
 
     })
-
-    // ------------ TEST FOR UPDATE PAYLOAD ------------
-    it("Add task updates database correctly", (done) => {
-        let name = `${testTaskId} :: Test update task name`
-
-        // TEST LIST CORRECT TASK
-        request(app).get(`/task?${serialize({
-            search: name,
-            page: 1,
-            pageSize: 10,
-        })}`)
-            .expect((res) => {
-
-                // CHECK IF PAYLOAD KEYS ARE CORRECT
-                let data = res.body.data.tasks[0]
-                expect(data.name).to.be.equal(name);
-
-            })
-            .end(done);
-
-    })
-
 })

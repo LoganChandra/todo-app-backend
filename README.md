@@ -1,5 +1,4 @@
-# TODO LIST API with NodeJS and Typescript
-#### Deployed App: https://todo-or-not-todo-app-backend.herokuapp.com
+# TODO LIST API with Express, NodeJS and Typescript
 The API handles the following processes
 - Add task
 - Lists task
@@ -8,5 +7,9 @@ The API handles the following processes
 # Getting Started:
 - npm i
 - npm start
+
+## Testing
+- npm i
+- npm test
 
 That's all! Your app is running.

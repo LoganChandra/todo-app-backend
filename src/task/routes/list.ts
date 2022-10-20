@@ -10,6 +10,15 @@ export const list = async (req: express.Request, res: express.Response) => {
 
     // ASSIGNING INPUTS
     let { search } = req.query
+
+    if (!req.query.page || !req.query.pageSize) {
+      res.status(400).send({
+        data: { totalCount: 0, tasks: [] },
+        msg: "Failed to list tasks",
+      });
+      return
+    }
+
     let page: number = parseInt(<string>req.query.page)
     let pageSize: number = parseInt(<string>req.query.pageSize)
 
@@ -34,7 +43,6 @@ export const list = async (req: express.Request, res: express.Response) => {
     });
   } catch (error) {
     console.log("error", error);
-    
     res.status(500).send({ data: [], msg: "Failed to list tasks" });
   }
 };
