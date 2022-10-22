@@ -25,7 +25,7 @@ export const list = async (req: express.Request, res: express.Response) => {
 
     // LIST TASKS
     let where = { name: { [Op.like]: `%${search}%` } }
-    let tasks = await TaskInstance.findAll({
+    let tasksData = await TaskInstance.findAll({
       where,
       offset: 0 + (page - 1) * pageSize,
       limit: pageSize,
@@ -38,9 +38,9 @@ export const list = async (req: express.Request, res: express.Response) => {
     let totalCount = await TaskInstance.count({ where });
 
     // ADDING STATUS TO TASK LIST
-    tasks.map(e => {
+    let tasks = tasksData.map(e => {
       return {
-        ...e,
+        ...e.toJSON(),
         status: getStatus(e.toJSON().dueDate)
       }
     })
