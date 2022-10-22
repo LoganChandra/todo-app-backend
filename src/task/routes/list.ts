@@ -4,6 +4,7 @@ import { Op } from "sequelize";
 
 // INTERNAL
 import { TaskInstance } from "../../model/task";
+import { getStatus } from "../helpers";
 
 export const list = async (req: express.Request, res: express.Response) => {
   try {
@@ -35,6 +36,14 @@ export const list = async (req: express.Request, res: express.Response) => {
 
     // COUNT OF ALL TASKS
     let totalCount = await TaskInstance.count({ where });
+
+    // ADDING STATUS TO TASK LIST
+    tasks.map(e => {
+      return {
+        ...e,
+        status: getStatus(e.toJSON().dueDate)
+      }
+    })
 
     // RETURN RESULT
     res.status(200).send({

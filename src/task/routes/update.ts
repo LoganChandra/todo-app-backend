@@ -4,7 +4,6 @@ import { Op } from "sequelize";
 
 // INTERNAL
 import { TaskInstance } from "../../model/task";
-import { getStatus } from "../helpers"
 
 export const update = async (req: express.Request, res: express.Response) => {
   try {
@@ -20,9 +19,6 @@ export const update = async (req: express.Request, res: express.Response) => {
       return
     }
 
-    // GETTING STATUS
-    let status = getStatus(dueDate)
-
     let taskCount = await TaskInstance.count({
       where: { taskId: { [Op.eq]: id } }
     })
@@ -34,7 +30,7 @@ export const update = async (req: express.Request, res: express.Response) => {
     }
 
     // UPDATE TASK
-    await TaskInstance.update({ name, description, dueDate: dueDate.getTime(), status }, {
+    await TaskInstance.update({ name, description, dueDate: dueDate.getTime() }, {
       where: {
         taskId: id
       }

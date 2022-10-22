@@ -1,4 +1,4 @@
-export const getStatus = (inp: Date): string => {
+export const getStatus = (inp: number): string => {
     try {
         let date = new Date(inp)
         let one_day = 1000 * 60 * 60 * 24;

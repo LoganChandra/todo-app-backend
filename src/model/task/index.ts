@@ -8,7 +8,6 @@ export interface TaskAttributes {
   description: string;
   dueDate: number;
   createDate: Number;
-  status: string;
 }
 export class TaskInstance extends Model<TaskAttributes> { }
 
@@ -35,10 +34,6 @@ TaskInstance.init(
     createDate: {
       type: DataTypes.NUMBER,
       allowNull: true,
-    },
-    status: {
-      type: DataTypes.STRING,
-      allowNull: false,
     }
   },
   {

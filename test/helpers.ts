@@ -19,8 +19,7 @@ export const createTestTasks = (async (testTaskId: string, n: number, postfix: s
             name: `${taskId != undefined ? taskId : testTaskId}${e}${postfix}`,
             description: "",
             dueDate: new Date().getTime(),
-            createDate: new Date().getTime(),
-            status: "Due soon"
+            createDate: new Date().getTime()
         });
     })
     await Promise.all(createTaskPromiseArray)
