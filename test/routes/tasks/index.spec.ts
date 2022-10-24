@@ -159,11 +159,32 @@ describe("API RETURNS CORRECT PAYLOAD", async () => {
     // CREATING DUMMY TASKS
     let addPostfix = " :: Test add task name"
     let updatePostfix = " :: Test update task name"
+    let overduePostfix = " :: This task is Overdue"
+    let dueSoonPostfix = " :: This task is Due soon"
+    let notUrgentPostfix = " :: This task is Not urgent"
+
+    // DEFINING DATES
+    let overdueDate = new Date();
+    overdueDate.setDate(overdueDate.getDate() + -1);
+
+    let dueSoonDate = new Date();
+    dueSoonDate.setDate(dueSoonDate.getDate() + 7);
+
+    let notUrgentDate = new Date();
+    notUrgentDate.setDate(notUrgentDate.getDate() + 8);
 
     before(() => {
+
+        // CHECKING LIST, ADD AND UPDATE
         createTestTasks(testTaskId, 11, "")
         createTestTasks(testTaskId, 1, addPostfix)
         createTestTasks(testTaskId, 1, updatePostfix)
+
+        // CHECKING TASK STATUS
+        createTestTasks(testTaskId, 1, overduePostfix, undefined, overdueDate)
+        createTestTasks(testTaskId, 1, dueSoonPostfix, undefined, dueSoonDate)
+        createTestTasks(testTaskId, 1, notUrgentPostfix, undefined, notUrgentDate)
+
     })
 
     // ------------ LIST ------------
@@ -180,7 +201,7 @@ describe("API RETURNS CORRECT PAYLOAD", async () => {
 
                 // CHECK IF PAYLOAD KEYS ARE CORRECT
                 let stringifyPayload = JSON.stringify(Object.keys(res.body.data.tasks[0]))
-                let expectedStringifyPayload = JSON.stringify(["taskId", "name", "description", "dueDate", "createDate", "status", "createdAt", "updatedAt"])
+                let expectedStringifyPayload = JSON.stringify(["taskId", "name", "description", "dueDate", "createDate", "createdAt", "updatedAt", "status"])
                 expect(stringifyPayload).to.be.equal(expectedStringifyPayload);
 
             })
@@ -191,6 +212,70 @@ describe("API RETURNS CORRECT PAYLOAD", async () => {
 
             })
             .end(done);
+
+    })
+
+    // ------------ LIST ------------
+    it("List task responds with \"Overdue\" status", (done) => {
+
+        let pageSize = 1
+        let name = `${testTaskId}0${overduePostfix}`
+        request(app).get(`/task?${serialize({
+            search: name,
+            page: 1,
+            pageSize,
+        })}`).expect(200)
+
+            .expect((res) => {
+
+                // CHECK TASK STATUS
+                let data = res.body.data.tasks[0]
+                expect(data.status).to.be.equal("Overdue");
+
+            })
+            .end(done);
+
+    })
+
+    // ------------ LIST ------------
+    it("List task responds with \"Due soon\" status", (done) => {
+
+        let pageSize = 1
+        let name = `${testTaskId}0${dueSoonPostfix}`
+        request(app).get(`/task?${serialize({
+            search: name,
+            page: 1,
+            pageSize,
+        })}`).expect(200)
+            .expect((res) => {
+
+                // CHECK TASK STATUS
+                let data = res.body.data.tasks[0]
+                expect(data.status).to.be.equal("Due soon");
+
+            })
+            .end(done);
+
+    })
+    // ------------ LIST ------------
+    it("List task responds with \"Not urgent\" status", (done) => {
+
+        let pageSize = 1
+        let name = `${testTaskId}0${notUrgentPostfix}`
+        request(app).get(`/task?${serialize({
+            search: name,
+            page: 1,
+            pageSize,
+        })}`).expect(200)
+            .expect((res) => {
+
+                // CHECK TASK STATUS
+                let data = res.body.data.tasks[0]
+                expect(data.status).to.be.equal("Not urgent");
+
+            })
+            .end(done);
+
     })
 
     // ------------ ADD ------------

@@ -10,7 +10,7 @@ export const serialize = function (obj) {
     return str.join("&");
 }
 
-export const createTestTasks = (async (testTaskId: string, n: number, postfix: string, taskId?: string) => {
+export const createTestTasks = (async (testTaskId: string, n: number, postfix: string, taskId?: string, dueDate?: Date) => {
 
     // CREATE n TASKS FOR TESTING
     let createTaskPromiseArray = [...Array(n).keys()].map(e => {
@@ -18,7 +18,7 @@ export const createTestTasks = (async (testTaskId: string, n: number, postfix: s
             taskId: taskId != undefined ? taskId : uuid(),
             name: `${taskId != undefined ? taskId : testTaskId}${e}${postfix}`,
             description: "",
-            dueDate: new Date().getTime(),
+            dueDate: dueDate != undefined ? dueDate.getTime() : new Date().getTime(),
             createDate: new Date().getTime()
         });
     })
