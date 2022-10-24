@@ -159,19 +159,6 @@ describe("API RETURNS CORRECT PAYLOAD", async () => {
     // CREATING DUMMY TASKS
     let addPostfix = " :: Test add task name"
     let updatePostfix = " :: Test update task name"
-    let overduePostfix = " :: This task is Overdue"
-    let dueSoonPostfix = " :: This task is Due soon"
-    let notUrgentPostfix = " :: This task is Not urgent"
-
-    // DEFINING DATES
-    let overdueDate = new Date();
-    overdueDate.setDate(overdueDate.getDate() + -1);
-
-    let dueSoonDate = new Date();
-    dueSoonDate.setDate(dueSoonDate.getDate() + 7);
-
-    let notUrgentDate = new Date();
-    notUrgentDate.setDate(notUrgentDate.getDate() + 8);
 
     before(() => {
 
@@ -179,11 +166,6 @@ describe("API RETURNS CORRECT PAYLOAD", async () => {
         createTestTasks(testTaskId, 11, "")
         createTestTasks(testTaskId, 1, addPostfix)
         createTestTasks(testTaskId, 1, updatePostfix)
-
-        // CHECKING TASK STATUS
-        createTestTasks(testTaskId, 1, overduePostfix, undefined, overdueDate)
-        createTestTasks(testTaskId, 1, dueSoonPostfix, undefined, dueSoonDate)
-        createTestTasks(testTaskId, 1, notUrgentPostfix, undefined, notUrgentDate)
 
     })
 
@@ -212,6 +194,73 @@ describe("API RETURNS CORRECT PAYLOAD", async () => {
 
             })
             .end(done);
+
+    })
+
+    // ------------ ADD ------------
+    it("Add task adds database correctly", (done) => {
+
+        let name = `${testTaskId}0${addPostfix}`
+        request(app).get(`/task?${serialize({
+            search: name,
+            page: 1,
+            pageSize: 10,
+        })}`)
+            .expect((res) => {
+
+                let data = res.body.data.tasks[0]
+                expect(data.name).to.be.equal(name);
+
+            })
+            .end(done);
+
+    })
+
+    // ------------ UPDATE ------------
+    it("Update task updates database correctly", (done) => {
+
+        const name = `${testTaskId}0${updatePostfix}`
+        request(app).get(`/task?${serialize({
+            search: name,
+            page: 1,
+            pageSize: 10,
+        })}`)
+            .expect((res) => {
+
+                // CHECK IF PAYLOAD KEYS ARE CORRECT
+                let data = res.body.data.tasks[0]
+                expect(data.name).to.be.equal(name);
+
+            })
+            .end(done);
+
+    })
+})
+
+// API RETURNS CORRECT TASK STATUS
+describe("API RETURNS CORRECT TASK STATUS", async () => {
+
+    // CREATING DUMMY TASKS
+    let overduePostfix = " :: This task is Overdue"
+    let dueSoonPostfix = " :: This task is Due soon"
+    let notUrgentPostfix = " :: This task is Not urgent"
+
+    // DEFINING DATES
+    let overdueDate = new Date();
+    overdueDate.setDate(overdueDate.getDate() + -1);
+
+    let dueSoonDate = new Date();
+    dueSoonDate.setDate(dueSoonDate.getDate() + 7);
+
+    let notUrgentDate = new Date();
+    notUrgentDate.setDate(notUrgentDate.getDate() + 8);
+
+    before(() => {
+
+        // CHECKING TASK STATUS
+        createTestTasks(testTaskId, 1, overduePostfix, undefined, overdueDate)
+        createTestTasks(testTaskId, 1, dueSoonPostfix, undefined, dueSoonDate)
+        createTestTasks(testTaskId, 1, notUrgentPostfix, undefined, notUrgentDate)
 
     })
 
@@ -257,6 +306,7 @@ describe("API RETURNS CORRECT PAYLOAD", async () => {
             .end(done);
 
     })
+
     // ------------ LIST ------------
     it("List task responds with \"Not urgent\" status", (done) => {
 
@@ -278,42 +328,4 @@ describe("API RETURNS CORRECT PAYLOAD", async () => {
 
     })
 
-    // ------------ ADD ------------
-    it("Add task adds database correctly", (done) => {
-
-        let name = `${testTaskId}0${addPostfix}`
-        request(app).get(`/task?${serialize({
-            search: name,
-            page: 1,
-            pageSize: 10,
-        })}`)
-            .expect((res) => {
-
-                let data = res.body.data.tasks[0]
-                expect(data.name).to.be.equal(name);
-
-            })
-            .end(done);
-
-    })
-
-    // ------------ UPDATE ------------
-    it("Update task updates database correctly", (done) => {
-
-        const name = `${testTaskId}0${updatePostfix}`
-        request(app).get(`/task?${serialize({
-            search: name,
-            page: 1,
-            pageSize: 10,
-        })}`)
-            .expect((res) => {
-
-                // CHECK IF PAYLOAD KEYS ARE CORRECT
-                let data = res.body.data.tasks[0]
-                expect(data.name).to.be.equal(name);
-
-            })
-            .end(done);
-
-    })
 })
