@@ -4,7 +4,6 @@ import { uuid } from 'uuidv4';
 
 // INTERNAL
 import { TaskInstance } from "../../model/task";
-import { getStatus } from "../helpers"
 
 export const add = async (req: express.Request, res: express.Response) => {
   try {

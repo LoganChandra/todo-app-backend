@@ -9,7 +9,7 @@ import { TaskRoutes } from "./src/task/task.routes.config";
 import debug from "debug";
 import db from "./src/config/database.config";
 
-
+// EXPORTING APP TO BE USED IN TESTS
 export const app: express.Application = express();
 const server: http.Server = http.createServer(app);
 const port = 8001

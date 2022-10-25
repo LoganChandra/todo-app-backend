@@ -56,6 +56,7 @@ describe("UPDATE ROUTE RETURN 200", async () => {
     before(() => {
         createTestTasks(testTaskId, 1, "", testTaskId)
     })
+
     // ------------ UPDATE ------------
     it("Update task responds with 200", (done) => {
 
@@ -67,6 +68,7 @@ describe("UPDATE ROUTE RETURN 200", async () => {
         request(app).patch(`/task/${testTaskId}`).send(payload).expect(200, done)
 
     })
+
 });
 
 // ROUTES RETURN 400
@@ -107,6 +109,7 @@ describe("ROUTES RETURN 400", async () => {
         request(app).post("/task").send(payload).expect(400, done)
 
     })
+
 });
 
 // ROUTES RETURN 400 ON INVALID PAYLOAD
@@ -235,6 +238,7 @@ describe("API RETURNS CORRECT PAYLOAD", async () => {
             .end(done);
 
     })
+
 })
 
 // API RETURNS CORRECT TASK STATUS
